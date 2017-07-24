@@ -1,0 +1,40 @@
+<html>
+	<head>
+		<title>
+			Title
+		</title>
+
+        <style type="text/css">
+        #canvas{
+	        width: 300px;
+	        height: 600px;
+	        border: 1px solid gray;
+        }
+        #Title{
+	        position: relative;
+	        left: 100px;
+        }
+        #Text{
+	        position: relative;
+	        left: 90px;
+        }
+        </style>
+	</head>
+	<body>
+        <div id="canvas">
+        <h1 id="Title">タイトル</h1>
+        <p id="Text">プレイヤーを選択</p>
+        <button id="Text" type=button onclick="jump()">
+        Player1
+        </button>
+        <button id="Text" type=button onclick="jump()">
+        Player2
+        </button>
+        </div>
+		<script>
+		    function jump() {
+		       location.href = "index.html";
+		    }
+		</script>
+	</body>
+</html>
