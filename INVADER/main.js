@@ -5,15 +5,19 @@ var fps = 1000 / 30;
 var mouse = new Point();
 var ctx;
 var fire = false;
+var fire2 = false;
 var counter = 0;
 var score = 0;
 var message = "";
 var move1 = new Point();
+var move2 = new Point();
+
+var input_key_buffer = new Array();
 
 // - const --------------------------------------------------------------------
 var CHARA_COLOR = 'rgba(0, 0, 255, 0.75)';
 var CHARA_SHOT_COLOR = 'rgba(0, 255, 0, 0.75)';
-var CHARA_SHOT_MAX_COUNT = 10;
+var CHARA_SHOT_MAX_COUNT = 1;
 
 var ENEMY_COLOR = 'rgba(255, 0, 0, 0.75)';
 var ENEMY_MAX_COUNT = 10;
@@ -50,11 +54,13 @@ window.onload = function () {
     // 自機初期化
     var chara = new Character();
     chara.init(10);
-    mouse.x = screenCanvas.width / 2;
-    mouse.y = screenCanvas.height - 20;
+    chara.position.x = 100;
+    chara.position.y = 500;
 
     var chara2 = new Character();
     chara2.init(10);
+    chara2.position.x = 100;
+    chara2.position.y = 100;
     
 
     var enemy = new Array(ENEMY_MAX_COUNT);
@@ -65,6 +71,11 @@ window.onload = function () {
     var charaShot = new Array(CHARA_SHOT_MAX_COUNT);
     for (i = 0; i < CHARA_SHOT_MAX_COUNT; i++) {
         charaShot[i] = new CharacterShot();
+    }
+
+    var charaShot2 = new Array(CHARA_SHOT_MAX_COUNT);
+    for (i = 0; i < CHARA_SHOT_MAX_COUNT; i++) {
+        charaShot2[i] = new CharacterShot();
     }
 
     // エネミーショット初期化
@@ -82,8 +93,88 @@ window.onload = function () {
         bit[i] = new Bit();
     }
 
+
+    // ------------------------------------------------------------
+    // キーボードを押したときに実行されるイベント
+    // ------------------------------------------------------------
+    document.onkeydown = function (e) {
+        if (!e) e = window.event; // レガシー
+
+        input_key_buffer[e.keyCode] = true;
+    };
+
+    // ------------------------------------------------------------
+    // キーボードを離したときに実行されるイベント
+    // ------------------------------------------------------------
+    document.onkeyup = function (e) {
+        if (!e) e = window.event; // レガシー
+
+        input_key_buffer[e.keyCode] = false;
+    };
+
+    // ------------------------------------------------------------
+    // ウィンドウが非アクティブになる瞬間に実行されるイベント
+    // ------------------------------------------------------------
+    window.onblur = function () {
+        // 配列をクリアする
+        input_key_buffer.length = 0;
+    };
+
+    function KeyIsDown(key_code) {
+
+        if (input_key_buffer[key_code]) return true;
+
+        return false;
+    }
+
+
     // レンダリング処理を呼び出す
-    (function(){
+    (function () {
+        ////////////移動処理(UP)///////////////// 
+        if (KeyIsDown(68)) {
+            if (KeyIsDown(65)) {
+                move1.x = 0;
+            } else {
+                move1.x = 2;
+            }
+        }
+        else if (!KeyIsDown(65)) {
+            move1.x = 0;
+        }
+
+        if (KeyIsDown(65)) {
+            if (KeyIsDown(68)) {
+                move1.x = 0;
+            } else {
+                move1.x = -2;
+            }
+        }
+        else if (!KeyIsDown(68)) {
+            move1.x = 0;
+        }
+        ////////////移動処理(Down)///////////////// 
+        if (KeyIsDown(39)) {
+            if (KeyIsDown(37)) {
+                move2.x = 0;
+            } else {
+                move2.x = 2;
+            }
+        }
+        else if (!KeyIsDown(37)) {
+            move2.x = 0;
+        }
+
+        if (KeyIsDown(37)) {
+            if (KeyIsDown(39)) {
+                move2.x = 0;
+            } else {
+                move2.x = -2;
+            }
+        }
+        else if (!KeyIsDown(39)) {
+            move2.x = 0;
+        }
+        ///////////////////////////////
         
         counter++;
         // カウンターの値によってシーン分岐
@@ -120,6 +211,23 @@ window.onload = function () {
             fire = false;
         }
 
+        // fire2フラグの値により分岐
+        if (fire2) {
+            // すべての自機ショットを調査する
+            for (i = 0; i < CHARA_SHOT_MAX_COUNT; i++) {
+                // 自機ショットが既に発射されているかチェック
+                if (!charaShot2[i].alive) {
+                    // 自機ショットを新規にセット
+                    charaShot2[i].set(chara2.position, 3, 5);
+
+                    // ループを抜ける
+                    break;
+                }
+            }
+            // フラグを降ろしておく
+            fire2 = false;
+        }
+
         // screenクリア
         ctx.clearRect(0, 0, screenCanvas.width, screenCanvas.height);
 
@@ -128,11 +236,13 @@ window.onload = function () {
         ctx.beginPath();
 
         // 自機の位置を設定
-        chara.position.x = mouse.x;
-        chara.position.y = mouse.y;
+        chara.position.x = chara.position.x;
+        chara.position.y = chara.position.y;
 
         // 自機を描くパスを設定
         ctx.arc(chara.position.x, chara.position.y, chara.size, 0, Math.PI * 2, false);
+
+        chara.move(move2);
 
         // 自機の色を設定する
         ctx.fillStyle = CHARA_COLOR;
@@ -183,6 +293,38 @@ window.onload = function () {
         // 自機ショットを描く
         ctx.fill();
         ////////////
+
+        ///////////////////
+        // パスの設定を開始
+        ctx.beginPath();
+
+        // すべての自機ショットを調査する
+        for (i = 0; i < CHARA_SHOT_MAX_COUNT; i++) {
+            // 自機ショットが既に発射されているかチェック
+            if (charaShot2[i].alive) {
+                // 自機ショットを動かす
+                charaShot2[i].move();
+
+                // 自機ショットを描くパスを設定
+                ctx.arc(
+                    charaShot2[i].position.x,
+                    charaShot2[i].position.y,
+                    charaShot2[i].size,
+                    0, Math.PI * 2, false
+                );
+
+                // パスをいったん閉じる
+                ctx.closePath();
+            }
+        }
+
+        // 自機ショットの色を設定する
+        ctx.fillStyle = CHARA_SHOT_COLOR;
+
+        // 自機ショットを描く
+        ctx.fill();
+        ////////////
+
         // エネミーの出現管理 -------------------------------------------------
         // 1000 フレーム目までは 100 フレームに一度出現させる
         if (counter % 100 === 0 && counter < 1000) {
@@ -205,7 +347,7 @@ window.onload = function () {
                     break;
                 }
             }
-        } else if (counter === 1000) {
+        } /*else if (counter === 1000) {
             // 1000 フレーム目にボスを出現させる
             boss.position.x = screenCanvas.width / 2;
             boss.position.y = -80;
@@ -216,7 +358,7 @@ window.onload = function () {
                 j = 360 / BOSS_BIT_COUNT;
                 bit[i].set(boss, 15, 5, i * j);
             }
-        }
+        }*/
 
 
         // すべてのエネミーを調査する
@@ -240,8 +382,9 @@ window.onload = function () {
                     for (j = 0; j < ENEMY_SHOT_MAX_COUNT; j++) {
                         if (!enemyShot[j].alive) {
                             // エネミーショットを新規にセットする
-                            p = enemy[i].position.distance(chara.position);
-                            p.normalize();
+                            p = new Point();
+                            p.x = 0;
+                            p.y = 2;
                             enemyShot[j].set(enemy[i].position, p, 5, 5);
 
                             // 1個出現させたのでループを抜ける
@@ -386,6 +529,43 @@ window.onload = function () {
             }
         }
 
+        // 自機と自機ショットとの衝突判定
+        for (i = 0; i < CHARA_SHOT_MAX_COUNT; i++) {
+            // エネミーショットの生存フラグをチェック
+            if (charaShot2[i].alive) {
+                // 自機とエネミーショットとの距離を計測
+                p = chara.position.distance(charaShot2[i].position);
+                if (p.length() < chara.size) {
+                    // 衝突していたら生存フラグを降ろす
+                    chara.alive = false;
+
+                    // 衝突があったのでパラメータを変更してループを抜ける
+                    run = false;
+                    message = 'GAME OVER !!';
+                    break;
+                }
+            }
+        }
+
+        // 自機と自機ショットとの衝突判定
+        for (i = 0; i < CHARA_SHOT_MAX_COUNT; i++) {
+            // エネミーショットの生存フラグをチェック
+            if (charaShot[i].alive) {
+                // 自機とエネミーショットとの距離を計測
+                p = chara2.position.distance(charaShot[i].position);
+                if (p.length() < chara2.size) {
+                    // 衝突していたら生存フラグを降ろす
+                    chara2.alive = false;
+
+                    // 衝突があったのでパラメータを変更してループを抜ける
+                    run = false;
+                    message = 'GAME OVER !!';
+                    break;
+                }
+            }
+        }
+
+
         
 
         // すべての自機ショットを調査する
@@ -486,36 +666,23 @@ function keyDown(event) {
 
     // Escキーが押されていたらフラグを降ろす
     if (ck === 27) { run = false; }
+    if (ck === 32) {
+        fire2 = true;
+    }
 
-    //W
-    if (ck === 87) {
-        move1.y = -2;        
-    }
-    //D
-    if (ck === 68) {
-        move1.x = 2;
-    }
-    //S
-    if (ck === 83) {
-        move1.y = 2;
-    }
-    //A
-    if (ck === 65) {
-        move1.x = -2;
-    }
 }
 
 
 
 function keyUp(event) {
-    var ck = event.keyCode;
-    //WorS
-    if (ck === 87 || ck===83) {
-        move1.y = 0;
-    }
-    //DorA
-    if (ck === 68 || ck===65) {
-        move1.x = 0;
-    }
+    //var ck = event.keyCode;
+    ////WorS
+    //if (ck === 87 && ck===83) {
+    //    move1.y = 0;
+    //}
+    ////DorA
+    //if (ck === 68 && ck===65) {
+    //    move1.x = 0;
+    //}
 
 }

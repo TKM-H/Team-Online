@@ -34,7 +34,7 @@ CharacterShot.prototype.set = function (p, size, speed) {
 
 CharacterShot.prototype.move = function () {
     // 座標を真上にspeed分だけ移動させる
-    this.position.y -= this.speed;
+    this.position.y -= this.speed * 3;
 
     // 一定以上の座標に到達していたら生存フラグを降ろす
     if (this.position.y < -this.size) {
@@ -70,27 +70,34 @@ Enemy.prototype.move = function () {
     // パラメータをインクリメント
     this.param++;
 
-    // タイプに応じて分岐
-    switch (this.type) {
-        case 0:
-            // X 方向へまっすぐ進む
-            this.position.x += 2;
+    if (this.param >= 90) {
+        // タイプに応じて分岐
+        switch (this.type) {
+            case 0:
+                // X 方向へまっすぐ進む
+                this.position.x += 12;
 
-            // スクリーンの右端より奥に到達したら生存フラグを降ろす
-            if (this.position.x > this.size + screenCanvas.width) {
-                this.alive = false;
-            }
-            break;
-        case 1:
-            // マイナス X 方向へまっすぐ進む
-            this.position.x -= 2;
+                // スクリーンの右端より奥に到達したら切り返す
+                if (this.position.x > screenCanvas.width - this.size / 2) {
+                    this.position.y += this.size;
+                    this.type = 1;
+                }
+                this.param = 0;
+                break;
+            case 1:
+                // マイナス X 方向へまっすぐ進む
+                this.position.x -= 12;
 
-            // スクリーンの左端より奥に到達したら生存フラグを降ろす
-            if (this.position.x < -this.size) {
-                this.alive = false;
-            }
-            break;
+                // スクリーンの左端より奥に到達したら切り返す
+                if (this.position.x < this.size / 2) {
+                    this.type = 0;
+                    this.position.y += this.size;
+                }
+                this.param = 0;
+                break;
+        }
     }
+    
 };
 
 function EnemyShot() {
