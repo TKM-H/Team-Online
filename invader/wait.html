@@ -1,0 +1,56 @@
+<html>
+	<head>
+		<title>
+			wait
+		</title>
+				<script src="/socket.io/socket.io.js"></script>
+
+        <style type="text/css">
+        #canvas{
+	        width: 300px;
+	        height: 600px;
+	        border: 1px solid gray;
+        }
+        #Title{
+	        position: relative;
+          top:200px;
+        }
+        </style>
+	</head>
+	<body>
+        <div id="canvas">
+        <h1 id="Title">マッチング中です...</h1>
+				<button id="Text" type=button onclick="debug()">
+        debug
+        </button>
+        </div>
+		<script>
+        var socket = io();
+				var counter;
+
+         socket.on('connectNo', function(data)
+          {
+						counter = parseInt(data.num);
+            if(data)
+            {
+              if(counter == 2)
+              {
+                jump();
+								socket.emit('connectNo', {num:count});
+              }
+            }
+          });
+
+		    function jump()
+        {
+		       window.location.href = "/html/game.html";
+		    }
+
+				function debug()
+				{
+					var s = "" + counter;
+					alert(s);
+				}
+		</script>
+	</body>
+</html>

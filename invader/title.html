@@ -1,0 +1,76 @@
+<html>
+	<head>
+		<title>
+			Title
+		</title>
+		<script src="socket.io/socket.io.js"></script>
+
+        <style type="text/css">
+        #canvas{
+	        width: 300px;
+	        height: 600px;
+	        border: 1px solid gray;
+        }
+        #Title{
+	        position: relative;
+	        left: 100px;
+        }
+        #Text{
+	        position: relative;
+	        left: 90px;
+        }
+        </style>
+	</head>
+	<body>
+        <div id="canvas">
+        <h1 id="Title">タイトル</h1>
+        <p id="Text">プレイヤーを選択</p>
+        <button id="Text" type=button onclick="p1jump()">
+        Player1
+        </button>
+        <button id="Text" type=button onclick="p2jump()">
+        Player2
+        </button>
+        </div>
+		<script>
+				var socket = io();
+				var count = 0;
+
+				socket.on('connectNo', function(data)
+				{
+					if(data)
+					{
+						var a =  parseInt(data.num);
+						console.log(a);
+						if(a == 1)//一人ログイン中
+						{
+							count = 2;
+						}
+					}
+				});
+
+		    function p1jump()
+				{
+					if(count == 0)
+					{
+						count =1;
+					}
+					alert(count);
+					 localStorage.setItem(name, "1");
+					 socket.emit('connectNo', {num:count});//サーバに保存
+		       window.location.href = "/html/wait.html";
+		    }
+				function p2jump()
+				{
+					if(count == 0)
+					{
+						count = 1;
+					}
+					alert(count);
+					localStorage.setItem(name, "2");
+					socket.emit('connectNo', {num:count});//サーバに保存
+					window.location.href = "/html/wait.html";
+				}
+		</script>
+	</body>
+</html>

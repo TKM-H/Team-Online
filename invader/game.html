@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="/js/common.js"></script>
+    <script src="/js/character.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/boss.js"></script>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <style>
+        canvas
+        {
+            border: 1px solid gray;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="screen"></canvas>
+    <p id="info"></p>
+
+<script>
+    var socket = io();
+    var name = null;
+    //-----------------------
+	// ユーザー名の入力を求める
+	//-----------------------
+	do{
+		name = prompt("あなたの名前を「半角英数字」で入力してください");
+		if(! name.match(/^[a-zA-Z0-9]{1,}$/))
+		{
+			name = null;
+		}
+  } while(name===null);
+
+</script>
+</body>
+</html>

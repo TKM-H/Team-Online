@@ -14,14 +14,33 @@ var io   = require('socket.io')(http);
 // Webサーバ
 //--------------------------------------
 app.get('/', function(req, res){
-  res.sendFile(__dirname + '/index.html');
+  res.sendFile(__dirname + '/title.html');
 });
-app.get('/image/:file', function(req, res){
+
+app.get('/html/wait.html', function (req, res) {
+    res.sendFile(__dirname + '/wait.html');
+});
+
+app.get('/html/game.html', function (req, res) {
+    res.sendFile(__dirname + '/game.html');
+});
+
+app.get('/html/gameClear', function (req, res) {
+    res.sendFile(__dirname + '/gameClear.html');
+});
+
+app.get('/html/gameOver', function (req, res) {
+    res.sendFile(__dirname + '/gameOver.html');
+});
+
+app.get('/resource/:file', function(req, res){
   res.sendFile(__dirname + '/resource/' + req.params.file);
 });
+
 app.get('/js/:file', function(req, res){
   res.sendFile(__dirname + '/js/' + req.params.file);
 });
+
 http.listen(3000, function(){
   console.log('listening on *:3000');
 });
@@ -32,6 +51,12 @@ http.listen(3000, function(){
 io.on('connection', function(socket){
   //接続時のメッセージ
   console.log('a user connected');
+
+  //接続人数
+  socket.on('connectNo', function(data){
+    io.emit('connectNo', data);
+	//console.log('posData:' + data);
+  });
 
   //ポジションデータ1
   socket.on('moveChar1', function(data){

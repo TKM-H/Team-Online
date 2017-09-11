@@ -1,0 +1,68 @@
+<html>
+<head>
+<title>title</title>
+<style>
+#c1
+{
+  border: 1px solid grey;
+  background-color: grey;
+}
+#button
+{
+	position: absolute;
+	top: 450px;
+	left: 250px;
+}
+</style>
+
+</head>
+<body>
+ <canvas id="c1" width="640" height="480"></canvas>
+
+  <div id = "bt">
+  <button id = "button" type="button"  onclick="back()">
+    <strong>タイトル</strong>
+  </button>
+</div>
+
+  <script>
+    window.onload = function()
+    {
+      renderer_canvas();
+    }
+
+    var renderer_canvas = function()
+    {
+      var ctx = doc("c1").getContext("2d");
+      txtDisplay(ctx, "GAME OVER...", 100, 50, 60, "white");
+      progress_timer = setTimeout("renderer_canvas()", 16);
+    }
+
+
+    function back()
+    {
+      window.location.href = "title.html";
+    }
+
+    function doc(id)
+    {
+      return document.getElementById(id);
+    }
+
+    function txtDisplay(ctx, txt, tx, ty, tsize, textcolor)
+    {
+      em = 0;
+      var tmp_data = [];
+      tmp_data = txt.split("<BR>");
+      ctx.font = tsize + "px 'ＭＳ Ｐゴシック'";
+      ctx.fillStyle = textcolor;
+
+      for(i=0;i<tmp_data.length;i++)
+      {
+        ctx.fillText(tmp_data[i], tx, (ty + (tsize) + ((tsize + em) * i)));
+      }
+    }
+  </script>
+</body>
+
+</html>

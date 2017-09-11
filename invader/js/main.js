@@ -620,6 +620,7 @@ window.onload = function () {
 
                     // 衝突があったのでパラメータを変更してループを抜ける
                     run = false;
+                    window.location.href = "/html/gameOver.html";
                     message = 'GAME OVER !!';
                     break;
                 }
@@ -638,6 +639,7 @@ window.onload = function () {
 
                     // 衝突があったのでパラメータを変更してループを抜ける
                     run = false;
+                    window.location.href = "/html/gameOver.html";
                     message = 'GAME OVER !!';
                     break;
                 }
@@ -657,6 +659,7 @@ window.onload = function () {
                     // 衝突があったのでパラメータを変更してループを抜ける
                     run = false;
                     message = 'GAME OVER !!';
+                    window.location.href = "/html/gameClear.html";
                     break;
                 }
             }
@@ -710,6 +713,7 @@ window.onload = function () {
                         if (boss.life < 0) {
                             score += 10;
                             run = false;
+                            window.location.href = "html/gameClear.html";
                             message = 'CLEAR !!';
                         }
                     }
