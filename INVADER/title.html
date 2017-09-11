@@ -5,35 +5,63 @@
 		</title>
 
         <style type="text/css">
-        #canvas{
-	        width: 300px;
-	        height: 600px;
+
+        canvas{
+            background-color: #000000;
 	        border: 1px solid gray;
         }
-        #Title{
+        p{
 	        position: relative;
-	        left: 100px;
+            top: -70px;
+	        left: 340px;
         }
-        #Text{
+        button{
 	        position: relative;
-	        left: 90px;
+            top: 20px;
+	        left: -224px;
         }
         </style>
+
 	</head>
 	<body>
-        <div id="canvas">
-        <h1 id="Title">タイトル</h1>
-        <p id="Text">プレイヤーを選択</p>
-        <button id="Text" type=button onclick="jump()">
+        <canvas id="cv1" width="300" height ="600">
+        </canvas>
+        <button id="Tex" type=button onclick="jump()">
         Player1
         </button>
-        <button id="Text" type=button onclick="jump()">
+        <button id="Tex" type=button onclick="jump()">
         Player2
         </button>
-        </div>
 		<script>
+		    var img = new Image();    //画像オブジェクト作成
+		    var img2 = new Image();
+		    var img3 = new Image();
+
+		    var height = 0;
+		    var height2 = -600;
+		    
+		    window.onload = function () {
+		        img.src = "titleback.png";  //パスを指定する
+		        img2.src = "titleback2.png";
+		        img3.src = "titleback3.png";
+		        draw();
+		    }
 		    function jump() {
 		       location.href = "index.html";
+		    }
+		    function draw() {
+		        height++;
+		        height2++;
+		        if (height >= 600)
+		            height = -600;
+		        if (height2 >= 600)
+		            height2 = -600;
+		        var ctx = document.getElementById("cv1").getContext("2d");
+		        ctx.drawImage(img, 0, height2);
+		        ctx.drawImage(img, 0, height);
+		        ctx.drawImage(img2, 0, 0);
+		        ctx.drawImage(img3, 0, 0);
+		        progress_timer = setTimeout("draw()", 16);
 		    }
 		</script>
 	</body>
