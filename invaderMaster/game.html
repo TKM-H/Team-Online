@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="/js/common.js"></script>
+    <script src="/js/character.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/boss.js"></script>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <style>
+        canvas
+        {
+            border: 1px solid gray;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="screen"></canvas>
+    <p id="info"></p>
+
+<script>
+    var socket = io();
+    socket.emit('connectNo', {num:2});//サーバに保存
+    var name = window.location.search.substring(1,window.location.search.length);
+
+
+</script>
+</body>
+</html>

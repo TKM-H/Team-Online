@@ -1,0 +1,108 @@
+<html>
+	<head>
+		<title>
+			Title
+		</title>
+    <script src="socket.io/socket.io.js"></script>
+    <style type="text/css">
+        canvas{
+          background-color: #000000;
+	        border: 1px solid gray;
+        }
+        p{
+	        position: relative;
+          top: -70px;
+	        left: 340px;
+        }
+        button{
+	        position: relative;
+          top: -50px;
+	        left: -220px;
+        }
+        </style>
+
+	</head>
+	<body>
+    <div>
+        <canvas id="cv1" width="300" height ="600"></canvas>
+        <button id="Tex" type=button onclick="jump1()">
+        Player1
+        </button>
+        <button id="Tex" type=button onclick="jump2()">
+        Player2
+        </button>
+      </div>
+
+		<script>
+
+        var socket = io();
+        var count = 0;
+
+		    var img = new Image();    //画像オブジェクト作成
+		    var img2 = new Image();
+		    var img3 = new Image();
+		    var height = 0;
+		    var height2 = -600;
+
+        socket.on('connectNo', function(data)
+				{
+					if(data)
+					{
+						var a =  parseInt(data.num);
+						console.log(a);
+						if(a == 1)//一人ログイン中
+						{
+							count = 2;
+						}
+					}
+				});
+
+		    window.onload = function ()
+        {
+		        img.src = "/Images/titleback.png";  //パスを指定する
+		        img2.src = "/Images/titleback2.png";
+		        img3.src = "Images/titleback3.png";
+		        draw();
+		    }
+
+		    function jump1()
+        {
+           if(count == 0)
+ 					{
+ 						count =1;
+ 					}
+ 					 //alert(count);
+ 					 //localStorage.setItem(name, "1");
+ 					 socket.emit('connectNo', {num:count});//サーバに保存
+ 		       window.location.href = "/html/wait.html?1";
+		    }
+        function jump2()
+        {
+          if(count == 0)
+         {
+           count =1;
+         }
+          //alert(count);
+          //localStorage.setItem(name, "1");
+          socket.emit('connectNo', {num:count});//サーバに保存
+          window.location.href = "/html/wait.html?2";
+		    }
+
+		    function draw()
+         {
+		        height++;
+		        height2++;
+		        if (height >= 600)
+		            height = -600;
+		        if (height2 >= 600)
+		            height2 = -600;
+		        var ctx = document.getElementById("cv1").getContext("2d");
+		        ctx.drawImage(img, 0, height2);
+		        ctx.drawImage(img, 0, height);
+		        ctx.drawImage(img2, 0, 0);
+		        ctx.drawImage(img3, 0, -50);
+		        progress_timer = setTimeout("draw()", 16);
+		    }
+		</script>
+	</body>
+</html>
